@@ -1,10 +1,20 @@
-"use client"
+"use client";
 
-import { useMemo } from "react"
-import { Card, Typography, Space, Tag, Button, Row, Col, Empty, Statistic } from "antd"
+import { useMemo } from "react";
+import {
+  Card,
+  Typography,
+  Space,
+  Tag,
+  Button,
+  Row,
+  Col,
+  Empty,
+  Statistic,
+} from "antd";
 import {
   EnvironmentOutlined,
-  BuildingOutlined,
+  BuildOutlined,
   DollarOutlined,
   HomeOutlined,
   StarOutlined,
@@ -13,41 +23,52 @@ import {
   SafetyOutlined,
   WifiOutlined,
   CoffeeOutlined,
-  SwimmingPoolOutlined,
+  // SwimmingPoolOutlined,
   CarOutlined,
-} from "@ant-design/icons"
+} from "@ant-design/icons";
 
-const { Title, Paragraph, Text } = Typography
+const { Title, Paragraph, Text } = Typography;
 
-export default function ContentPreview({ selectedProject, selectedUnits, areas, zones }) {
+export default function ContentPreview({
+  selectedProject,
+  selectedUnits,
+  areas,
+  zones,
+}) {
   const contentData = useMemo(() => {
-    if (!selectedProject || !selectedUnits || selectedUnits.length === 0) return null
+    if (!selectedProject || !selectedUnits || selectedUnits.length === 0)
+      return null;
 
-    const area = areas.find((a) => a.area_id === selectedProject.area_id)
-    const zone = zones.find((z) => z.zone_id === selectedProject.zone_id)
+    const area = areas.find((a) => a.area_id === selectedProject.area_id);
+    const zone = zones.find((z) => z.zone_id === selectedProject.zone_id);
 
-    const totalPrice = selectedUnits.reduce((sum, unit) => sum + unit.price, 0)
-    const totalArea = selectedUnits.reduce((sum, unit) => sum + unit.area_sqft, 0)
-    const averagePrice = totalPrice / selectedUnits.length
-    const averagePricePerSqft = totalPrice / totalArea
+    const totalPrice = selectedUnits.reduce((sum, unit) => sum + unit.price, 0);
+    const totalArea = selectedUnits.reduce(
+      (sum, unit) => sum + unit.area_sqft,
+      0
+    );
+    const averagePrice = totalPrice / selectedUnits.length;
+    const averagePricePerSqft = totalPrice / totalArea;
 
     const bedroomDistribution = selectedUnits.reduce((acc, unit) => {
-      const key = unit.bedrooms === 0 ? "Studio" : `${unit.bedrooms} BR`
-      acc[key] = (acc[key] || 0) + 1
-      return acc
-    }, {})
+      const key = unit.bedrooms === 0 ? "Studio" : `${unit.bedrooms} BR`;
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {});
 
     // Determine focus type based on selection
-    let focusType = "standard"
-    const luxuryUnits = selectedUnits.filter((unit) => unit.has_balcony && unit.has_parking && unit.bedrooms >= 3)
-    const familyUnits = selectedUnits.filter((unit) => unit.bedrooms >= 2)
+    let focusType = "standard";
+    const luxuryUnits = selectedUnits.filter(
+      (unit) => unit.has_balcony && unit.has_parking && unit.bedrooms >= 3
+    );
+    const familyUnits = selectedUnits.filter((unit) => unit.bedrooms >= 2);
 
     if (luxuryUnits.length > selectedUnits.length * 0.5) {
-      focusType = "luxury"
+      focusType = "luxury";
     } else if (familyUnits.length > selectedUnits.length * 0.7) {
-      focusType = "family"
+      focusType = "family";
     } else if (selectedUnits.length > 1) {
-      focusType = "investment"
+      focusType = "investment";
     }
 
     return {
@@ -59,18 +80,20 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
       averagePricePerSqft,
       bedroomDistribution,
       focusType,
-    }
-  }, [selectedProject, selectedUnits, areas, zones])
+    };
+  }, [selectedProject, selectedUnits, areas, zones]);
 
   if (!selectedProject) {
     return (
       <div className="h-full flex items-center justify-center">
         <Empty
           description="Select a project to preview the landing page"
-          image={<HomeOutlined style={{ fontSize: "64px", color: "#d9d9d9" }} />}
+          image={
+            <HomeOutlined style={{ fontSize: "64px", color: "#d9d9d9" }} />
+          }
         />
       </div>
-    )
+    );
   }
 
   if (!selectedUnits || selectedUnits.length === 0) {
@@ -85,16 +108,18 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
         className="w-full"
       >
         <Empty
-          image={<BuildingOutlined style={{ fontSize: "48px", color: "#d9d9d9" }} />}
+          image={
+            <BuildOutlined style={{ fontSize: "48px", color: "#d9d9d9" }} />
+          }
           description="Select units to preview landing page content"
         />
       </Card>
-    )
+    );
   }
 
   const getHeroContent = () => {
-    const baseTitle = selectedProject.project_name
-    const location = `${contentData.area?.area_name_en}, ${contentData.zone?.zone_name_en}`
+    const baseTitle = selectedProject.project_name;
+    const location = `${contentData.area?.area_name_en}, ${contentData.zone?.zone_name_en}`;
 
     switch (contentData.focusType) {
       case "investment":
@@ -103,33 +128,41 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
           subtitle: `High-yield rental returns in ${location}`,
           cta: "Calculate ROI",
           highlights: ["8-12% Expected ROI", "Prime Location", "Ready to Rent"],
-        }
+        };
       case "family":
         return {
           title: `Your Dream Family Home - ${baseTitle}`,
           subtitle: `Spacious living with world-class amenities in ${location}`,
           cta: "Explore Family Features",
-          highlights: ["Top Schools Nearby", "Family Amenities", "Safe Community"],
-        }
+          highlights: [
+            "Top Schools Nearby",
+            "Family Amenities",
+            "Safe Community",
+          ],
+        };
       case "luxury":
         return {
           title: `Exclusive Luxury Living - ${baseTitle}`,
           subtitle: `Unparalleled elegance and sophistication in ${location}`,
           cta: "Schedule Private Tour",
-          highlights: ["Luxury Finishes", "Premium Services", "Exclusive Access"],
-        }
+          highlights: [
+            "Luxury Finishes",
+            "Premium Services",
+            "Exclusive Access",
+          ],
+        };
       default:
         return {
           title: `Discover ${baseTitle}`,
           subtitle: `Modern living in the heart of ${location}`,
           cta: "Learn More",
           highlights: ["Modern Design", "Prime Location", "Quality Living"],
-        }
+        };
     }
-  }
+  };
 
-  const heroContent = getHeroContent()
-  const formatCurrency = (amount) => `AED ${amount.toLocaleString()}`
+  const heroContent = getHeroContent();
+  const formatCurrency = (amount) => `AED ${amount.toLocaleString()}`;
 
   return (
     <Card
@@ -149,26 +182,34 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
               {heroContent.title}
             </Title>
 
-            <Paragraph className="text-xl text-white opacity-90 mb-6">{heroContent.subtitle}</Paragraph>
+            <Paragraph className="text-xl text-white opacity-90 mb-6">
+              {heroContent.subtitle}
+            </Paragraph>
 
             <Space wrap className="mb-6">
               <Tag className="bg-white/20 text-white border-white/20 px-3 py-1">
                 {selectedUnits.length} Units Selected
               </Tag>
               <Tag className="bg-white/20 text-white border-white/20 px-3 py-1">
-                From {formatCurrency(Math.min(...selectedUnits.map((u) => u.price)))}
+                From{" "}
+                {formatCurrency(Math.min(...selectedUnits.map((u) => u.price)))}
               </Tag>
               <Tag className="bg-white/20 text-white border-white/20 px-3 py-1">
                 {contentData.totalArea.toLocaleString()} sqft Total
               </Tag>
               {contentData.focusType === "investment" && (
-                <Tag className="bg-green-500 text-white border-green-500 px-3 py-1">8-12% ROI Expected</Tag>
+                <Tag className="bg-green-500 text-white border-green-500 px-3 py-1">
+                  8-12% ROI Expected
+                </Tag>
               )}
             </Space>
 
             <Space wrap className="mb-8">
               {heroContent.highlights.map((highlight, index) => (
-                <div key={index} className="flex items-center gap-2 bg-white/10 px-3 py-2 rounded-full">
+                <div
+                  key={index}
+                  className="flex items-center gap-2 bg-white/10 px-3 py-2 rounded-full"
+                >
                   <StarOutlined />
                   <span className="text-sm">{highlight}</span>
                 </div>
@@ -176,10 +217,17 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
             </Space>
 
             <Space>
-              <Button type="primary" size="large" className="bg-white text-blue-600 hover:bg-gray-100 border-white">
+              <Button
+                type="primary"
+                size="large"
+                className="bg-white text-blue-600 hover:bg-gray-100 border-white"
+              >
                 {heroContent.cta}
               </Button>
-              <Button size="large" className="border-white text-white hover:bg-white/10 bg-transparent">
+              <Button
+                size="large"
+                className="border-white text-white hover:bg-white/10 bg-transparent"
+              >
                 Download Brochure
               </Button>
             </Space>
@@ -195,11 +243,12 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
                   <EnvironmentOutlined className="text-blue-600" />
                   <Text strong>Location:</Text>
                   <Text>
-                    {contentData.area?.area_name_en}, {contentData.zone?.zone_name_en}
+                    {contentData.area?.area_name_en},{" "}
+                    {contentData.zone?.zone_name_en}
                   </Text>
                 </div>
                 <div className="flex items-center gap-2">
-                  <BuildingOutlined className="text-blue-600" />
+                  <BuildOutlined className="text-blue-600" />
                   <Text strong>Developer:</Text>
                   <Text>{selectedProject.developer}</Text>
                 </div>
@@ -210,11 +259,19 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
                 </div>
                 <div className="flex items-center gap-2">
                   <Text strong>Available Units:</Text>
-                  <Tag color="green">{selectedProject.available_units} Available</Tag>
+                  <Tag color="green">
+                    {selectedProject.available_units} Available
+                  </Tag>
                 </div>
                 <div className="flex items-center gap-2">
                   <Text strong>Completion Status:</Text>
-                  <Tag color={selectedProject.completion_status === "ready" ? "green" : "blue"}>
+                  <Tag
+                    color={
+                      selectedProject.completion_status === "ready"
+                        ? "green"
+                        : "blue"
+                    }
+                  >
                     {selectedProject.completion_status.replace("_", " ")}
                   </Tag>
                 </div>
@@ -277,7 +334,9 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
                     <div className="space-y-1 text-sm">
                       <div className="flex justify-between">
                         <Text type="secondary">Bedrooms:</Text>
-                        <Text>{unit.bedrooms === 0 ? "Studio" : unit.bedrooms}</Text>
+                        <Text>
+                          {unit.bedrooms === 0 ? "Studio" : unit.bedrooms}
+                        </Text>
                       </div>
                       <div className="flex justify-between">
                         <Text type="secondary">Area:</Text>
@@ -322,7 +381,11 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
                         value={contentData.totalPrice * 0.1}
                         formatter={(value) => formatCurrency(value)}
                         valueStyle={{ color: "#52c41a", fontSize: "18px" }}
-                        suffix={<div className="text-xs text-green-700">Expected Annual Return</div>}
+                        suffix={
+                          <div className="text-xs text-green-700">
+                            Expected Annual Return
+                          </div>
+                        }
                       />
                     </div>
                   </div>
@@ -333,7 +396,9 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
                     <Title level={5} className="mb-3">
                       Ready to Rent
                     </Title>
-                    <Paragraph type="secondary">Fully furnished units ready for immediate rental income</Paragraph>
+                    <Paragraph type="secondary">
+                      Fully furnished units ready for immediate rental income
+                    </Paragraph>
                   </div>
                 </Col>
                 <Col xs={24} md={8}>
@@ -342,7 +407,9 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
                     <Title level={5} className="mb-3">
                       Strategic Location
                     </Title>
-                    <Paragraph type="secondary">Walking distance to metro, malls, and business districts</Paragraph>
+                    <Paragraph type="secondary">
+                      Walking distance to metro, malls, and business districts
+                    </Paragraph>
                   </div>
                 </Col>
               </>
@@ -352,20 +419,24 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
               <>
                 <Col xs={24} md={8}>
                   <div className="text-center p-6 border rounded hover:shadow-md transition-shadow feature-card">
-                    <BuildingOutlined className="text-4xl text-green-600 mb-4" />
+                    <BuildOutlined className="text-4xl text-green-600 mb-4" />
                     <Title level={5} className="mb-3">
                       Top Schools Nearby
                     </Title>
-                    <Paragraph type="secondary">Access to premium international schools within 10 minutes</Paragraph>
+                    <Paragraph type="secondary">
+                      Access to premium international schools within 10 minutes
+                    </Paragraph>
                   </div>
                 </Col>
                 <Col xs={24} md={8}>
                   <div className="text-center p-6 border rounded hover:shadow-md transition-shadow feature-card">
-                    <SwimmingPoolOutlined className="text-4xl text-blue-600 mb-4" />
+                    {/* <SwimmingPoolOutlined className="text-4xl text-blue-600 mb-4" /> */}
                     <Title level={5} className="mb-3">
                       Family Pool & Beach
                     </Title>
-                    <Paragraph type="secondary">Kids pool, adult pool, and private beach access</Paragraph>
+                    <Paragraph type="secondary">
+                      Kids pool, adult pool, and private beach access
+                    </Paragraph>
                   </div>
                 </Col>
                 <Col xs={24} md={8}>
@@ -374,7 +445,9 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
                     <Title level={5} className="mb-3">
                       Spacious Layouts
                     </Title>
-                    <Paragraph type="secondary">2-4 bedroom units with large living areas and balconies</Paragraph>
+                    <Paragraph type="secondary">
+                      2-4 bedroom units with large living areas and balconies
+                    </Paragraph>
                   </div>
                 </Col>
               </>
@@ -388,7 +461,9 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
                     <Title level={5} className="mb-3">
                       Private Gym & Spa
                     </Title>
-                    <Paragraph type="secondary">State-of-the-art fitness center with personal trainers</Paragraph>
+                    <Paragraph type="secondary">
+                      State-of-the-art fitness center with personal trainers
+                    </Paragraph>
                   </div>
                 </Col>
                 <Col xs={24} md={8}>
@@ -397,16 +472,20 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
                     <Title level={5} className="mb-3">
                       Valet Parking
                     </Title>
-                    <Paragraph type="secondary">24/7 valet service with covered parking spaces</Paragraph>
+                    <Paragraph type="secondary">
+                      24/7 valet service with covered parking spaces
+                    </Paragraph>
                   </div>
                 </Col>
                 <Col xs={24} md={8}>
                   <div className="text-center p-6 border rounded hover:shadow-md transition-shadow feature-card">
-                    <BuildingOutlined className="text-4xl text-purple-600 mb-4" />
+                    <BuildOutlined className="text-4xl text-purple-600 mb-4" />
                     <Title level={5} className="mb-3">
                       Concierge Service
                     </Title>
-                    <Paragraph type="secondary">Personal concierge for all your lifestyle needs</Paragraph>
+                    <Paragraph type="secondary">
+                      Personal concierge for all your lifestyle needs
+                    </Paragraph>
                   </div>
                 </Col>
               </>
@@ -419,7 +498,9 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
                 <Title level={5} className="mb-3">
                   24/7 Security
                 </Title>
-                <Paragraph type="secondary">Round-the-clock security with CCTV monitoring</Paragraph>
+                <Paragraph type="secondary">
+                  Round-the-clock security with CCTV monitoring
+                </Paragraph>
               </div>
             </Col>
             <Col xs={24} md={8}>
@@ -428,7 +509,9 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
                 <Title level={5} className="mb-3">
                   High-Speed Internet
                 </Title>
-                <Paragraph type="secondary">Fiber optic internet connectivity throughout</Paragraph>
+                <Paragraph type="secondary">
+                  Fiber optic internet connectivity throughout
+                </Paragraph>
               </div>
             </Col>
             <Col xs={24} md={8}>
@@ -437,7 +520,9 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
                 <Title level={5} className="mb-3">
                   Retail & Dining
                 </Title>
-                <Paragraph type="secondary">On-site cafes, restaurants, and retail outlets</Paragraph>
+                <Paragraph type="secondary">
+                  On-site cafes, restaurants, and retail outlets
+                </Paragraph>
               </div>
             </Col>
           </Row>
@@ -451,7 +536,8 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
                 {selectedUnits.length} Premium Units Selected
               </Title>
               <Paragraph type="secondary">
-                in {selectedProject.project_name}, {contentData.area?.area_name_en}
+                in {selectedProject.project_name},{" "}
+                {contentData.area?.area_name_en}
               </Paragraph>
             </div>
 
@@ -494,11 +580,13 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
                 Unit Distribution
               </Title>
               <Space wrap>
-                {Object.entries(contentData.bedroomDistribution).map(([bedrooms, count]) => (
-                  <Tag key={bedrooms} className="px-3 py-1">
-                    {bedrooms}: {count} units
-                  </Tag>
-                ))}
+                {Object.entries(contentData.bedroomDistribution).map(
+                  ([bedrooms, count]) => (
+                    <Tag key={bedrooms} className="px-3 py-1">
+                      {bedrooms}: {count} units
+                    </Tag>
+                  )
+                )}
               </Space>
             </div>
 
@@ -511,7 +599,9 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
                   <Col span={12}>
                     <div>
                       <Text type="secondary">Expected Annual Rental:</Text>
-                      <div className="font-semibold">{formatCurrency(contentData.totalPrice * 0.08)}</div>
+                      <div className="font-semibold">
+                        {formatCurrency(contentData.totalPrice * 0.08)}
+                      </div>
                     </div>
                   </Col>
                   <Col span={12}>
@@ -553,20 +643,20 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
             {contentData.focusType === "investment"
               ? "Start Your Investment Journey Today"
               : contentData.focusType === "family"
-                ? "Find Your Perfect Family Home"
-                : contentData.focusType === "luxury"
-                  ? "Experience Luxury Living"
-                  : "Make This Your New Home"}
+              ? "Find Your Perfect Family Home"
+              : contentData.focusType === "luxury"
+              ? "Experience Luxury Living"
+              : "Make This Your New Home"}
           </Title>
 
           <Paragraph className="text-xl text-white opacity-90 mb-6">
             {contentData.focusType === "investment"
               ? "Secure your high-yield investment with flexible payment plans and guaranteed returns"
               : contentData.focusType === "family"
-                ? "Move into your dream home with our family-friendly payment options and amenities"
-                : contentData.focusType === "luxury"
-                  ? "Exclusive units available with VIP payment terms and premium services"
-                  : "Discover modern living in Dubai's most sought-after location"}
+              ? "Move into your dream home with our family-friendly payment options and amenities"
+              : contentData.focusType === "luxury"
+              ? "Exclusive units available with VIP payment terms and premium services"
+              : "Discover modern living in Dubai's most sought-after location"}
           </Paragraph>
 
           <Space wrap className="mb-6">
@@ -587,19 +677,32 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
           </Space>
 
           <Space wrap>
-            <Button type="primary" size="large" className="bg-white text-blue-600 hover:bg-gray-100 border-white">
+            <Button
+              type="primary"
+              size="large"
+              className="bg-white text-blue-600 hover:bg-gray-100 border-white"
+            >
               Contact Sales Team
             </Button>
-            <Button size="large" className="border-white text-white hover:bg-white/10 bg-transparent">
+            <Button
+              size="large"
+              className="border-white text-white hover:bg-white/10 bg-transparent"
+            >
               Download Brochure
             </Button>
-            <Button size="large" className="border-white text-white hover:bg-white/10 bg-transparent">
+            <Button
+              size="large"
+              className="border-white text-white hover:bg-white/10 bg-transparent"
+            >
               Virtual Tour
             </Button>
           </Space>
 
           <div className="mt-6 text-sm opacity-75">
-            <Text className="text-white">Limited time offer • {selectedProject.available_units} units remaining</Text>
+            <Text className="text-white">
+              Limited time offer • {selectedProject.available_units} units
+              remaining
+            </Text>
           </div>
         </Card>
 
@@ -626,7 +729,12 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
                 </Title>
                 <div className="space-y-2 text-sm">
                   <p>🏗️ Developer: {selectedProject.developer}</p>
-                  <p>📅 Completion: {selectedProject.completion_status === "ready" ? "Ready" : "2025-2026"}</p>
+                  <p>
+                    📅 Completion:{" "}
+                    {selectedProject.completion_status === "ready"
+                      ? "Ready"
+                      : "2025-2026"}
+                  </p>
                   <p>🏢 Total Units: {selectedProject.total_units}</p>
                   <p>🎯 Handover: Q4 2025</p>
                 </div>
@@ -636,5 +744,5 @@ export default function ContentPreview({ selectedProject, selectedUnits, areas, 
         </Card>
       </div>
     </Card>
-  )
+  );
 }

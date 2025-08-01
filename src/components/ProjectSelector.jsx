@@ -1,59 +1,67 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Card, Select, Typography, Tag, Row, Col, Empty, Button } from "antd"
+import { useState, useEffect } from "react";
+import { Card, Select, Typography, Tag, Row, Col, Empty, Button } from "antd";
 import {
-  BuildingOutlined,
+  BuildOutlined,
   EnvironmentOutlined,
   CalendarOutlined,
   RiseOutlined,
   TeamOutlined,
   ClockCircleOutlined,
-} from "@ant-design/icons"
+} from "@ant-design/icons";
 
-const { Title, Text } = Typography
-const { Option } = Select
+const { Title, Text } = Typography;
+const { Option } = Select;
 
-export default function ProjectSelector({ projects, zones, areas, selectedProject, onProjectSelect }) {
-  const [selectedAreaId, setSelectedAreaId] = useState(null)
-  const [selectedZoneId, setSelectedZoneId] = useState(null)
-  const [filteredProjects, setFilteredProjects] = useState(projects)
+export default function ProjectSelector({
+  projects,
+  zones,
+  areas,
+  selectedProject,
+  onProjectSelect,
+}) {
+  const [selectedAreaId, setSelectedAreaId] = useState(null);
+  const [selectedZoneId, setSelectedZoneId] = useState(null);
+  const [filteredProjects, setFilteredProjects] = useState(projects);
 
   useEffect(() => {
-    let filtered = projects
+    let filtered = projects;
 
     if (selectedAreaId) {
-      filtered = filtered.filter((p) => p.area_id === selectedAreaId)
+      filtered = filtered.filter((p) => p.area_id === selectedAreaId);
     }
 
     if (selectedZoneId) {
-      filtered = filtered.filter((p) => p.zone_id === selectedZoneId)
+      filtered = filtered.filter((p) => p.zone_id === selectedZoneId);
     }
 
-    setFilteredProjects(filtered)
-  }, [selectedAreaId, selectedZoneId, projects])
+    setFilteredProjects(filtered);
+  }, [selectedAreaId, selectedZoneId, projects]);
 
   const getStatusColor = (status) => {
     switch (status) {
       case "ready":
-        return "green"
+        return "green";
       case "under_construction":
-        return "orange"
+        return "orange";
       case "off_plan":
-        return "blue"
+        return "blue";
       default:
-        return "default"
+        return "default";
     }
-  }
+  };
 
   const getAvailabilityColor = (available, total) => {
-    const percentage = (available / total) * 100
-    if (percentage < 20) return "red"
-    if (percentage < 50) return "orange"
-    return "green"
-  }
+    const percentage = (available / total) * 100;
+    if (percentage < 20) return "red";
+    if (percentage < 50) return "orange";
+    return "green";
+  };
 
-  const filteredZones = selectedAreaId ? zones.filter((z) => z.area_id === selectedAreaId) : zones
+  const filteredZones = selectedAreaId
+    ? zones.filter((z) => z.area_id === selectedAreaId)
+    : zones;
 
   return (
     <Card title="Select Project" className="w-full" size="small">
@@ -66,8 +74,8 @@ export default function ProjectSelector({ projects, zones, areas, selectedProjec
                 placeholder="Select an area"
                 className="w-full"
                 onChange={(value) => {
-                  setSelectedAreaId(value)
-                  setSelectedZoneId(null)
+                  setSelectedAreaId(value);
+                  setSelectedZoneId(null);
                 }}
                 allowClear
               >
@@ -119,13 +127,17 @@ export default function ProjectSelector({ projects, zones, areas, selectedProjec
               <Card
                 hoverable
                 className={`cursor-pointer transition-all unit-card ${
-                  selectedProject?.project_id === project.project_id ? "border-blue-500 bg-blue-50" : ""
+                  selectedProject?.project_id === project.project_id
+                    ? "border-blue-500 bg-blue-50"
+                    : ""
                 }`}
                 onClick={() => onProjectSelect(project)}
               >
                 <div className="space-y-3">
                   <div className="flex items-start justify-between">
-                    <h3 className="text-lg font-semibold mb-0">{project.project_name}</h3>
+                    <h3 className="text-lg font-semibold mb-0">
+                      {project.project_name}
+                    </h3>
                     <Tag color={getStatusColor(project.completion_status)}>
                       {project.completion_status.replace("_", " ")}
                     </Tag>
@@ -134,8 +146,15 @@ export default function ProjectSelector({ projects, zones, areas, selectedProjec
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <EnvironmentOutlined />
                     <span>
-                      {areas.find((a) => a.area_id === project.area_id)?.area_name_en} -{" "}
-                      {zones.find((z) => z.zone_id === project.zone_id)?.zone_name_en}
+                      {
+                        areas.find((a) => a.area_id === project.area_id)
+                          ?.area_name_en
+                      }{" "}
+                      -{" "}
+                      {
+                        zones.find((z) => z.zone_id === project.zone_id)
+                          ?.zone_name_en
+                      }
                     </span>
                   </div>
 
@@ -144,29 +163,41 @@ export default function ProjectSelector({ projects, zones, areas, selectedProjec
                     <span
                       style={{
                         color:
-                          getAvailabilityColor(project.available_units, project.total_units) === "red"
+                          getAvailabilityColor(
+                            project.available_units,
+                            project.total_units
+                          ) === "red"
                             ? "#ff4d4f"
-                            : getAvailabilityColor(project.available_units, project.total_units) === "orange"
-                              ? "#fa8c16"
-                              : "#52c41a",
+                            : getAvailabilityColor(
+                                project.available_units,
+                                project.total_units
+                              ) === "orange"
+                            ? "#fa8c16"
+                            : "#52c41a",
                       }}
                     >
-                      {project.available_units} / {project.total_units} units available
+                      {project.available_units} / {project.total_units} units
+                      available
                     </span>
                     <span className="text-xs text-gray-500">
-                      ({Math.round((project.available_units / project.total_units) * 100)}%)
+                      (
+                      {Math.round(
+                        (project.available_units / project.total_units) * 100
+                      )}
+                      %)
                     </span>
                   </div>
 
                   <div className="flex items-center gap-2 text-sm">
                     <RiseOutlined />
                     <span>
-                      AED {project.min_price.toLocaleString()} - {project.max_price.toLocaleString()}
+                      AED {project.min_price.toLocaleString()} -{" "}
+                      {project.max_price.toLocaleString()}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <BuildingOutlined />
+                    <BuildOutlined />
                     <span>Developer: {project.developer}</span>
                   </div>
 
@@ -207,13 +238,17 @@ export default function ProjectSelector({ projects, zones, areas, selectedProjec
         {filteredProjects.length === 0 && (
           <div className="text-center py-8">
             <Empty
-              image={<BuildingOutlined style={{ fontSize: "48px", color: "#d9d9d9" }} />}
+              image={
+                <BuildOutlined
+                  style={{ fontSize: "48px", color: "#d9d9d9" }}
+                />
+              }
               description="No projects found matching your criteria"
             >
               <Button
                 onClick={() => {
-                  setSelectedAreaId(null)
-                  setSelectedZoneId(null)
+                  setSelectedAreaId(null);
+                  setSelectedZoneId(null);
                 }}
               >
                 Clear Filters
@@ -223,5 +258,5 @@ export default function ProjectSelector({ projects, zones, areas, selectedProjec
         )}
       </div>
     </Card>
-  )
+  );
 }
