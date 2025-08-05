@@ -17,7 +17,7 @@ export default function PreviewPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { selectedProject, allAreas, hasMasterData } = useSelector((state) => ({
+  const { selectedProject, hasMasterData } = useSelector((state) => ({
       selectedProject: state.landingPage.selectedProject,
       allAreas: state.landingPage.allAreas,
       hasMasterData: state.landingPage.allProjects.length > 0
