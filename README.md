@@ -84,8 +84,9 @@ The initial view where the user can filter and select a project. The cards are d
 The background simulator has triggered a price change on a selected unit. The SmartNotificationCenter in the header shows a badge indicating new alerts. The corresponding unit card in the grid below would simultaneously display a "Price Updated!" warning.
 
 ### 5. Mobile Adaptive View
-![alt text]([SCREENSHOT_OF_MOBILE_ADAPTIVE_VIEW])
-**Description:** > When the screen size is reduced, the UnitMultiSelect component automatically switches to a compact view. This adaptive layout optimizes the user experience for mobile devices by presenting the most critical information in a space-efficient manner.
+![alt text](image-7.png)'
+![alt text](image-8.png)
+**Description:** >When the screen size is reduced, the UnitMultiSelect component automatically switches to a compact view. This adaptive layout optimizes the user experience for mobile devices by presenting the most critical information in a space-efficient manner.
 
 <!-- 2.5 Incomplete Items and Future Approach -->
 While the core functionality is complete, some advanced features and polishing items were not implemented due to time constraints.
