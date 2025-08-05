@@ -1,10 +1,9 @@
-// src/components/content/InvestmentHighlights.jsx
 import { Card, Statistic, Row, Col, Typography } from 'antd';
 import { RiseOutlined, DollarCircleOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 
 export default function InvestmentHighlights() {
-    const { totalPrice } = useSelector(state => state.landingPage.contentData); // Assumes you create this selector
+    const { totalPrice } = useSelector(state => state.landingPage.contentData); 
     const annualRental = totalPrice * 0.08; // 8% yield assumption
     
     return (

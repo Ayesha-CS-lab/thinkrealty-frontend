@@ -1,11 +1,8 @@
-// src/components/UnitMultiSelect.jsx
-
-"use client";
 import { useState, useMemo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Card, Button, Input, Select, Row, Col, Empty, Typography, Tag, Divider, Checkbox, Pagination } from "antd";
 import { updateUnitStatus } from "../features/landingPage/landingPageSlice";
-import { useScreenSize } from '../hooks/useScreenSize'; // Assuming this is at src/hooks/useScreenSize.js
+import { useScreenSize } from '../hooks/useScreenSize'; 
 
 import {
   Search,
@@ -21,7 +18,7 @@ import {
 
 const { Option } = Select;
 const { Text, Title } = Typography;
-const PAGE_SIZE = 12; // Controls how many units are shown per page
+const PAGE_SIZE = 12; 
 
 export default function UnitMultiSelect({ onUnitsChange, selectedUnits }) {
   const dispatch = useDispatch();

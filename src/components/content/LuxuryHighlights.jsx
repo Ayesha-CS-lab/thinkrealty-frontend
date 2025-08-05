@@ -1,5 +1,3 @@
-// src/components/content/LuxuryHighlights.jsx
-
 import { Card, Row, Col, Typography, Statistic, Tag } from 'antd';
 import { useSelector } from 'react-redux';
 import { StarOutlined } from '@ant-design/icons';
@@ -7,7 +5,6 @@ import { StarOutlined } from '@ant-design/icons';
 const { Paragraph } = Typography;
 
 export default function LuxuryHighlights() {
-    // Select relevant data from the Redux store
     const { avgPricePerSqft, hasBalcony, hasParking } = useSelector(state => {
         const { selectedUnits } = state.landingPage;
 

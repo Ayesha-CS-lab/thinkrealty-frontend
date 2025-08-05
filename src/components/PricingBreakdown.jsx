@@ -1,5 +1,3 @@
-// src/components/PricingBreakdown.jsx
-"use client"
 import { useMemo } from "react";
 import { Card, Typography, Divider } from "antd";
 import { DollarOutlined, RiseOutlined } from "@ant-design/icons";
@@ -14,15 +12,11 @@ const PARKING_FEE = 15000; // Fixed fee per parking spot
 
 // Calculate detailed price components for a single unit
 const getPriceComponents = (unit) => {
-    // This logic is simulated to match your UI mock.
-    // In a real scenario, these values would come from an API.
     const basePrice = unit.price * BASE_PRICE_PERCENT;
     const floorPremium = unit.floor_level * FLOOR_PREMIUM_RATE;
     const balconyPremium = unit.has_balcony ? basePrice * BALCONY_PREMIUM_PERCENT : 0;
     const parkingFee = unit.has_parking ? PARKING_FEE : 0;
 
-    // The sum of these simulated parts may not equal the original unit price perfectly.
-    // We adjust the basePrice to make the total match.
     const calculatedTotal = basePrice + floorPremium + balconyPremium + parkingFee;
     const adjustment = unit.price - calculatedTotal;
     

@@ -1,11 +1,8 @@
-// src/features/landingPage/landingPageSlice.js
 
 import { createSlice, createAsyncThunk,  } from "@reduxjs/toolkit";
 
-// --- BUSINESS LOGIC FUNCTIONS (These are correct and unchanged) ---
 
 const calculateComplexPricing = (units, project) => {
-    // ... your correct pricing logic here ...
     let basePrice = 0;
     let floorPremium = 0;
     let balconyPremium = 0;
@@ -47,7 +44,6 @@ const calculateComplexPricing = (units, project) => {
 };
 
 const handleAvailabilityCascade = (updatedUnit, allUnits, project,) => {
-    // ... your correct cascade logic here ...
     let sideEffects = [];
     const unitTypeKey = `${updatedUnit.property_type}-${updatedUnit.bedrooms}`;
     const similarUnits = allUnits.filter(u => `${u.property_type}-${u.bedrooms}` === unitTypeKey);
@@ -67,7 +63,6 @@ const handleAvailabilityCascade = (updatedUnit, allUnits, project,) => {
 };
 
 const generatePersonalizationConfig = (selectedUnits, area) => {
-    // ... your correct personalization logic here ...
     if (selectedUnits.length === 0) return { focusType: 'standard', showArabicContent: false };
     const showArabicContent = area?.area_name_ar?.includes("دبي") || false;
     let focusType = 'standard';
@@ -128,7 +123,7 @@ const runValidationChain = (selectedUnits, project) => {
 }
 
 
-// --- ASYNC THUNKS (Correct and unchanged) ---
+// --- ASYNC THUNKS  ---
 
 export const updatePricing = createAsyncThunk(
   "landingPage/updatePricing",
@@ -170,14 +165,12 @@ export const validateSelection = createAsyncThunk(
         return runValidationChain(selectedUnits, selectedProject);
     }
 );
-// --- NEW ASYNC THUNKS FOR SIMULATIONS ---
+// ---ASYNC THUNKS FOR SIMULATIONS ---
 export const simulateExternalPriceUpdate = createAsyncThunk(
     'landingPage/simulatePriceUpdate',
     async (_, { getState }) => {
-        // FIX: Moved the check from the component into the thunk
         const { selectedUnits, selectedProject } = getState().landingPage;
         
-        // If nothing is selected, the thunk does nothing. This is safe.
         if (selectedUnits.length === 0 || !selectedProject) return null;
 
         const randomUnitIndex = Math.floor(Math.random() * selectedUnits.length);
@@ -198,10 +191,8 @@ export const simulateExternalPriceUpdate = createAsyncThunk(
 export const simulateConcurrentReservation = createAsyncThunk(
     'landingPage/simulateConcurrentReservation',
     async (_, { getState }) => {
-        // FIX: Moved the check from the component into the thunk
         const { allUnits, selectedUnits, selectedProject } = getState().landingPage;
         
-        // If no project is selected, the thunk does nothing.
         if (!selectedProject) return null;
         
         const availableUnselectedUnits = allUnits.filter(
@@ -225,9 +216,7 @@ export const simulateConcurrentReservation = createAsyncThunk(
 
 // --- SLICE DEFINITION ---
 
-// FIX 1: Corrected and cleaned up initialState object
 const initialState = {
-  // Master Data Lists
   allProjects: [],
   allUnits: [],
   allAreas: [],
@@ -254,7 +243,6 @@ const initialState = {
   
   validationErrors: [],
   notifications: [],
-  // App-wide State
   layoutMode: 'standard',
 };
 
@@ -262,7 +250,6 @@ export const landingPageSlice = createSlice({
   name: "landingPage",
   initialState,
   reducers: {
-    // FIX 2: setMasterData now correctly stores all master lists
     setMasterData: (state, action) => {
       state.allProjects = action.payload.projects;
       state.allUnits = action.payload.units;
@@ -292,7 +279,7 @@ export const landingPageSlice = createSlice({
       });
     },
     addNotification: (state, action) => {
-        state.notifications.unshift(action.payload); // Add to the top of the list
+        state.notifications.unshift(action.payload); 
     },
     removeNotification: (state, action) => {
         state.notifications = state.notifications.filter(n => n.id !== action.payload);
@@ -302,7 +289,6 @@ export const landingPageSlice = createSlice({
     }
   },
   extraReducers: (builder) => {
-    // Correctly structured builder
     builder
       .addCase(updatePricing.fulfilled, (state, action) => {
         state.pricingCalculations = action.payload.pricingResult;
@@ -310,7 +296,7 @@ export const landingPageSlice = createSlice({
         state.contentPersonalization = action.payload.personalizationConfig;
       })
       .addCase(updateUnitStatus.fulfilled, (state, action) => {
-        if (action.payload.error) return; // Do nothing on error
+        if (action.payload.error) return; 
         const { unitId, newStatus, sideEffects } = action.payload;
         const unitIndex = state.allUnits.findIndex(u => u.unit_id === unitId);
         if (unitIndex !== -1) {
@@ -340,7 +326,7 @@ export const landingPageSlice = createSlice({
             state.allUnits[unitIndex].price = newPrice;
         }
         
-        // Also update the price in the current selection if it exists
+        // update the price in the current selection if it exists
         const selectedUnitIndex = state.selectedUnits.findIndex(u => u.unit_id === unitId);
         if (selectedUnitIndex !== -1) {
             state.selectedUnits[selectedUnitIndex].price = newPrice;

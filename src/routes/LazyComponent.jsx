@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 const componentMap = {
  
   "/": lazy(() => import("../components/LandingPageBuilder")),
-  "/project/:projectId/units": lazy(() => import("../components/UnitMultiSelect")),
+  // "/project/:projectId/units": lazy(() => import("../components/UnitMultiSelect")),
   "/preview": lazy(() => import("../pages/PreviewPage")),
 };
 

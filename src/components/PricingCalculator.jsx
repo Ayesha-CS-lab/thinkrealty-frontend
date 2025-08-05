@@ -1,5 +1,3 @@
-// src/components/PricingCalculator.jsx (previously PricingBreakdown)
-
 import { useSelector } from "react-redux";
 import { Card, Typography, Divider, Tooltip } from "antd";
 import { DollarOutlined, InfoCircleOutlined } from "@ant-design/icons";
@@ -24,7 +22,7 @@ export default function PricingCalculator() {
     <Card title={<><DollarOutlined /> Pricing Calculator</>}>
         <div className="space-y-2">
             {breakdown.map((item, index) => {
-                if (item.inactive) return null; // Don't render inactive items
+                if (item.inactive) return null; 
                 return (
                     <div key={index} className={`flex justify-between items-center ${item.isBold ? 'font-semibold' : ''}`}>
                         <Text type={item.isTotal ? 'default' : 'secondary'}>{item.label}</Text>
@@ -43,4 +41,3 @@ export default function PricingCalculator() {
   );
 }
 
-// In your PreviewSidebar.jsx, replace <PricingBreakdown/> with <PricingCalculator/>

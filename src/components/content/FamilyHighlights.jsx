@@ -1,5 +1,3 @@
-// src/components/content/FamilyHighlights.jsx
-
 import { Card, Row, Col, Typography, Statistic, Tag } from 'antd';
 import { useSelector } from 'react-redux';
 import { HomeOutlined, SmileOutlined } from '@ant-design/icons';

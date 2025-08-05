@@ -1,24 +1,18 @@
-// your main router file, e.g., router.js
-
 import { createBrowserRouter } from "react-router-dom";
 import LazyComponent from "./LazyComponent";
 import NetworkErrorFallback from "../pages/errorScreen/ErrorScreen";
 import NotFound from "../pages/errorScreen/NotFound";
 
-// --- Import your new layout component ---
-import RootLayout from "../Layout/RootLayout"; // Adjust path if needed
+import RootLayout from "../Layout/RootLayout"; 
 
 export const router = createBrowserRouter([
   {
-    // --- This is the new parent route ---
     path: "/",
     element: <RootLayout />,
-    errorElement: <NetworkErrorFallback />, // Common error boundary for all child routes
+    errorElement: <NetworkErrorFallback />, 
     
-    // --- Nest your page routes as children ---
     children: [
       {
-        // 'index: true' makes this the default child route for the "/" path
         index: true, 
         element: <LazyComponent path="/" />,
       },
@@ -30,7 +24,6 @@ export const router = createBrowserRouter([
     ]
   },
   {
-    // The "Not Found" route can remain outside the main layout
     path: "*",
     element: <NotFound />,
   },

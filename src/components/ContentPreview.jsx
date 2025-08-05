@@ -1,14 +1,7 @@
 
 import { useSelector } from "react-redux";
 import { Card, Typography, Space, Tag, Button, Row, Col, Empty, Statistic, Divider, Image as AntImage } from "antd";
-import {
-  EnvironmentOutlined,
-  BuildOutlined,
-  HomeOutlined,
-  StarOutlined,
-  EyeOutlined,
-  RiseOutlined,
-} from "@ant-design/icons";
+
 import { Home, Landmark, ShieldCheck, TrendingUp, BedDouble, Bath, Car, Trees, Utensils, Dumbbell, Star, Mail, Phone, Clock, Building } from 'lucide-react'; // Lucide icons for a modern feel
 
 import InvestmentHighlights from "./content/InvestmentHighlights";
@@ -17,7 +10,6 @@ import LuxuryHighlights from "./content/LuxuryHighlights";
 
 const { Title, Paragraph, Text } = Typography;
 
-// Helper function remains the same
 const getHandoverQuarter = (dateString) => {
     if (!dateString) return "TBD";
     const date = new Date(dateString);
@@ -36,10 +28,8 @@ const InfoCard = ({ icon, title, value, subValue = null }) => (
 );
 
 const DUMMY_IMAGE_URL = "https://images.pexels.com/photos/1115804/pexels-photo-1115804.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
-// The component now takes NO props. All data comes from Redux.
 export default function ContentPreview() {
     
-    // --- FINAL CORRECTED useSelector ---
     const {
         selectedProject,
         selectedUnits,
@@ -60,7 +50,6 @@ export default function ContentPreview() {
             dynamicHighlights: []
         };
         
-        // --- THIS IS THE FIX ---
         // We now check that `allAreas` and `allZones` themselves are truthy
         // before we try to access any of their properties like `.length`.
         if (selectedProject && selectedUnits.length > 0 && allAreas && allAreas.length > 0 && allZones && allZones.length > 0) {
@@ -94,7 +83,6 @@ export default function ContentPreview() {
     });
 
 
-  // --- Conditional Rendering for Initial State (remains the same) ---
   if (!selectedProject) {
         return <div className="p-8"><Empty description="Loading or no project selected..." /></div>;
     }
@@ -103,7 +91,6 @@ export default function ContentPreview() {
     }
   const formatCurrency = (amount) => `AED ${Math.round(amount).toLocaleString()}`;
   
-  // --- Dynamic Content Component Renderer (remains the same) ---
   const renderFocusSection = () => {
     switch (contentPersonalization.focusType) {
         case 'investment': return <InvestmentHighlights />;
@@ -123,7 +110,7 @@ export default function ContentPreview() {
             {/* --- NEW HERO SECTION --- */}
             <div className="relative h-96 rounded-lg overflow-hidden shadow-lg">
                 <AntImage
-                    src={DUMMY_IMAGE_URL} // Uses the safe variable
+                    src={DUMMY_IMAGE_URL} 
                     alt={selectedProject.project_name}
                     className="w-full h-full object-cover"
                     preview={false}

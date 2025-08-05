@@ -1,8 +1,5 @@
-// src/components/PreviewPage.jsx
-
 import { useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-// --- FIX: Removed PageHeader, which is deprecated ---
 import { Layout, Row, Col, Breadcrumb, Button } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { EditOutlined, HomeOutlined } from '@ant-design/icons';
@@ -35,10 +32,8 @@ export default function PreviewPage() {
     return <Navigate to="/" />;
   }
 
-  // --- Breadcrumb logic is unchanged and correct ---
   const breadcrumbItems = [
     {
-      // Using onClick for navigation
       onClick: () => navigate('/'),
       title: (
         <div className="flex items-center gap-1 cursor-pointer hover:text-blue-500 transition-colors">
@@ -60,7 +55,6 @@ export default function PreviewPage() {
     <Layout className="min-h-screen bg-gray-50">
       <Content className="w-full max-w-7xl mx-auto p-4 md:p-6 space-y-4">
         
-        {/* --- FIX: Replaced PageHeader with a custom styled div --- */}
         <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex justify-between items-center">
             <Breadcrumb items={breadcrumbItems} />
             <Button 

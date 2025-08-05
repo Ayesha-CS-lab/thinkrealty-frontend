@@ -1,5 +1,3 @@
-// src/components/PaymentOptions.jsx
-
 import { Card, Typography, Button, Divider } from 'antd';
 import { useSelector } from 'react-redux';
 import { DollarOutlined, CreditCardOutlined, ArrowRightOutlined } from '@ant-design/icons';
@@ -17,7 +15,7 @@ export default function PaymentOptions() {
   
   // These calculations are now based on the authoritative final price.
   const cashPrice = finalPrice * 0.95; // 5% discount for paying in full
-  const installmentPrice = finalPrice / 24; // Simple 24-month plan for display
+  const installmentPrice = finalPrice / 24; 
 
   const formatCurrency = (amount, includeDecimals = false) => 
       `AED ${includeDecimals ? parseFloat(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2}) : Math.round(amount).toLocaleString()}`;

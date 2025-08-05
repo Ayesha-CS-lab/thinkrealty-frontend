@@ -1,5 +1,3 @@
-// src/components/ValidationReport.jsx
-
 import { useSelector } from "react-redux";
 import { Card, Alert } from "antd";
 import { AlertTriangle, CheckCircle } from "lucide-react";

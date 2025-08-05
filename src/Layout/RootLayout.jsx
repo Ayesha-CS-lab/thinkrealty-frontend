@@ -1,7 +1,5 @@
-// src/layouts/RootLayout.jsx
-
 import { Outlet } from "react-router-dom";
-import ScrollToTop from "../utils/ScrollToTop"; // Adjust path if needed
+import ScrollToTop from "../utils/ScrollToTop"; 
 
 export default function RootLayout() {
   return (

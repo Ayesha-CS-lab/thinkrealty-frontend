@@ -1,10 +1,7 @@
-// src/components/UnitBreakdown.jsx
-
 import { Card, Tag, Typography } from 'antd';
 import { useSelector } from 'react-redux';
 const { Text } = Typography;
 
-// Re-using the same helper from PricingBreakdown.jsx to ensure consistency
 const getPriceComponents = (unit) => {
     const BASE_PRICE_PERCENT = 0.95;
     const FLOOR_PREMIUM_RATE = 500;

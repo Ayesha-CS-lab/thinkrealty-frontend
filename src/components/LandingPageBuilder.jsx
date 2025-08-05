@@ -1,4 +1,4 @@
-import { useRef, useEffect, useMemo } from "react"; // Add useMemo
+import { useRef, useEffect, useMemo } from "react"; 
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -38,84 +38,10 @@ import {
   validateSelection,
   simulateExternalPriceUpdate, simulateConcurrentReservation, removeNotification, clearAllNotifications
 } from "../features/landingPage/landingPageSlice";
-// const mockNotifications = [
-//   {
-//     id: 1,
-//     severity: "info",
-//     message: 'New project "Palm Views" was added.',
-//     timestamp: new Date(),
-//   },
-//   {
-//     id: 2,
-//     severity: "warning",
-//     message: "7 units in Marina Heights are reserved.",
-//     timestamp: new Date(),
-//   },
-// ];
+
 const { Header, Content } = Layout;
 const { Title, Text } = Typography;
 
-// const mockAreas = [
-//   { area_id: 1, area_name_en: "Dubai Marina", area_name_ar: "مرسى دبي" },
-//   { area_id: 2, area_name_en: "Downtown Dubai", area_name_ar: "وسط مدينة دبي" },
-//   { area_id: 3, area_name_en: "Palm Jumeirah" },
-//   { area_id: 4, area_name_en: "Business Bay" },
-//   { area_id: 5, area_name_en: "JBR" },
-// ];
-
-// const mockZones = [
-//   { zone_id: 1, area_id: 1, zone_name_en: "Marina Walk" },
-//   { zone_id: 2, area_id: 1, zone_name_en: "Marina Promenade" },
-//   { zone_id: 3, area_id: 2, zone_name_en: "DIFC" },
-//   { zone_id: 4, area_id: 2, zone_name_en: "Opera District" },
-//   { zone_id: 5, area_id: 3, zone_name_en: "Palm West Beach" },
-//   { zone_id: 6, area_id: 4, zone_name_en: "Business Bay Central" },
-//   { zone_id: 7, area_id: 5, zone_name_en: "JBR The Walk" },
-// ];
-
-// const mockProjects = [
-//   {
-//     project_id: 1,
-//     project_name: "Marina Heights Tower",
-//     // highlight-start
-//     imageUrl:
-//       "https://images.pexels.com/photos/1732414/pexels-photo-1732414.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-//     // highlight-end
-//     area_id: 1,
-//     zone_id: 1,
-//     completion_status: "under_construction",
-//     min_price: 800000,
-//     max_price: 2500000,
-//     total_units: 200,
-//     available_units: 35, // This is < 20% of 200    completion_date: "2025-12-31",
-//     developer: "Emaar Properties",
-//     amenities: ["Swimming Pool", "Gym", "Parking", "Security", "Concierge"],
-//   },
-//   {
-//     project_id: 2,
-//     project_name: "Downtown Luxury Residences",
-//     // highlight-start
-//     imageUrl:
-//       "https://images.pexels.com/photos/3935320/pexels-photo-3935320.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-//     // highlight-end
-//     area_id: 2,
-//     zone_id: 3,
-//     completion_status: "off_plan",
-//     min_price: 1200000,
-//     max_price: 4000000,
-//     total_units: 150,
-//     available_units: 25, // Reduced to show the "low availability" state
-//     completion_date: "2026-06-30",
-//     developer: "DAMAC Properties",
-//     amenities: [
-//       "Rooftop Pool",
-//       "Spa",
-//       "Valet Parking",
-//       "Business Center",
-//       "Kids Play Area",
-//     ],
-//   },
-// ];
 
 export default function LandingPageBuilder() {
   const navigate = useNavigate();
@@ -123,7 +49,7 @@ export default function LandingPageBuilder() {
   const dispatch = useDispatch();
   const { selectedProject, selectedUnits, allAreas, validationErrors } =
     useSelector((state) => state.landingPage);
-    const notifications = useSelector(state => state.landingPage.notifications); // Get notifications from store
+    const notifications = useSelector(state => state.landingPage.notifications); 
 
   useEffect(() => {
     // Dispatch all mock data to the store on initial load
@@ -141,8 +67,7 @@ export default function LandingPageBuilder() {
   }, [dispatch]);
     useEffect(() => {
         const simulatorInterval = setInterval(() => {
-            // No more 'if' check here. We just dispatch the actions unconditionally.
-            // The thunks themselves will decide if they should run.
+            
             const randomChoice = Math.random();
             if (randomChoice < 0.5) {
                 dispatch(simulateExternalPriceUpdate());
@@ -162,10 +87,9 @@ export default function LandingPageBuilder() {
 
 
   const handleProjectSelect = (project) => {
-    dispatch(setProject(project)); // Dispatch action to set project
+    dispatch(setProject(project)); 
   };
 
-  // This useEffect for scrolling remains the same
   // useEffect(() => {
   //   if (selectedProject && unitSectionRef.current) { /* ...scroll logic... */ }
   // }, [selectedProject]);
@@ -191,9 +115,9 @@ export default function LandingPageBuilder() {
   }, [selectedProject]);
 
   const handleUnitsChange = (units) => {
-    dispatch(setSelectedUnits(units)); // Dispatch action to set units
+    dispatch(setSelectedUnits(units)); 
     dispatch(updatePricing());
-    dispatch(validateSelection()); // Dispatch action to trigger price recalculation
+    dispatch(validateSelection()); 
   };
   const hasCriticalErrors = validationErrors.some(
     (e) => e.severity === "critical"

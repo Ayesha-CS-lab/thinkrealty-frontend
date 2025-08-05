@@ -1,8 +1,6 @@
-// src/components/SelectionAnalysis.jsx
-
 import { useMemo } from "react";
 import { Card, Progress, Typography } from "antd";
-import { useSelector } from 'react-redux'; // <-- Add useSelector
+import { useSelector } from 'react-redux'; 
 
 const { Text } = Typography;
 

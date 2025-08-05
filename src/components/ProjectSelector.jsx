@@ -56,7 +56,6 @@ export default function ProjectSelector({
   return (
     <Card title="Step 1: Select a Project" size="small">
       <div className="space-y-6 p-2 md:p-4">
-        {/* Filter Selectors */}
         <Row gutter={[16, 16]} className="mb-4">
           <Col xs={24} md={12}>
             <Text type="secondary" className="block mb-1 font-medium">Area</Text>
