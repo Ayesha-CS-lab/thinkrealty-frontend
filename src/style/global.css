@@ -1,0 +1,48 @@
+.selection-summary-card .summary-box {
+  border-radius: 10px;
+  padding: 20px;
+  color: rgb(22, 11, 11);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.summary-box-investment {
+  /* background: linear-gradient(135deg, #3b82f6, #9333ea); */
+}
+.summary-box-area {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+.summary-box-price {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.summary-icon {
+  font-size: 32px;
+  opacity: 0.8;
+}
+
+.unit-tag {
+  background: #f0f2f5;
+  border-radius: 16px;
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+:where(.css-dev-only-do-not-override-q4aezy).ant-card .ant-card-head {
+    display: flex
+;
+    justify-content: center;
+    flex-direction: column;
+    min-height: 56px;
+    margin-bottom: -1px;
+    padding: 0 24px;
+    color: rgba(0, 0, 0, 0.88);
+    font-weight: 600;
+    font-size: 30px;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    background: transparent;
+    border-bottom: 1px solid #f0f0f0;
+    border-radius: 10px 10px 0 0;
+}

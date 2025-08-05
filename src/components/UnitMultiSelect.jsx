@@ -1,320 +1,193 @@
-"use client";
+// src/components/UnitMultiSelect.jsx
 
-import { useState, useMemo } from "react";
+"use client";
+import { useState, useMemo, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Card, Button, Input, Select, Row, Col, Empty, Typography, Tag, Divider, Checkbox, Pagination } from "antd";
+import { updateUnitStatus } from "../features/landingPage/landingPageSlice";
+import { useScreenSize } from '../hooks/useScreenSize'; // Assuming this is at src/hooks/useScreenSize.js
+
 import {
-  Card,
-  Checkbox,
-  Tag,
-  Button,
-  Input,
-  Select,
-  Row,
-  Col,
-  Space,
-  Empty,
-  Typography,
-} from "antd";
-import {
-  HomeOutlined,
-  ExpandOutlined,
-  BuildOutlined,
-  FilterOutlined,
-  AppstoreOutlined,
-  BarsOutlined,
-  SearchOutlined,
-  CarOutlined,
-} from "@ant-design/icons";
+  Search,
+  Filter,
+  FileText,
+  Building2 as FloorIcon,
+  Bed,
+  Square as AreaIcon,
+  Car,
+  BuildingIcon as BalconyIcon,
+  AlertTriangle
+} from "lucide-react";
 
 const { Option } = Select;
-const { Title, Text } = Typography;
+const { Text, Title } = Typography;
+const PAGE_SIZE = 12; // Controls how many units are shown per page
 
-export default function UnitMultiSelect({
-  units,
-  selectedUnits,
-  onUnitToggle,
-}) {
-  const [viewMode, setViewMode] = useState("grid");
+export default function UnitMultiSelect({ onUnitsChange, selectedUnits }) {
+  const dispatch = useDispatch();
+
+  // --- LOCAL UI STATE ---
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterType, setFilterType] = useState("all");
   const [filterBedrooms, setFilterBedrooms] = useState("all");
-  const [sortBy, setSortBy] = useState("price");
+  const [sortBy, setSortBy] = useState("price_asc");
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // Filter and sort units
+  // --- REDUX STATE ---
+  const { masterUnitList, selectedProject } = useSelector(state => ({
+    masterUnitList: state.landingPage.allUnits,
+    selectedProject: state.landingPage.selectedProject,
+  }));
+  
+  // --- RESPONSIVE UI HOOK ---
+  const { width } = useScreenSize();
+  const isMobile = width < 768;
+  
+  // Derived state for quick lookups
+  const selectedIds = useMemo(() => selectedUnits.map(u => u.unit_id), [selectedUnits]);
+
+  // Reset filters and pagination when the project changes
+  useEffect(() => {
+    if (selectedProject) {
+      setSearchTerm("");
+      setFilterBedrooms("all");
+      setSortBy("price_asc");
+      setCurrentPage(1);
+    }
+  }, [selectedProject]);
+
+  // EVENT HANDLERS
+  const handleReserveClick = (e, unit) => {
+    e.stopPropagation();
+    dispatch(updateUnitStatus({ unitId: unit.unit_id, newStatus: 'reserved' }));
+  };
+
+  const toggleSelect = (unit) => {
+    const masterUnit = masterUnitList.find(u => u.unit_id === unit.unit_id);
+    if (!masterUnit || masterUnit.status !== "available") return;
+    
+    const isSelected = selectedIds.includes(unit.unit_id);
+    const newSelectedUnits = isSelected
+      ? selectedUnits.filter((u) => u.unit_id !== unit.unit_id)
+      : [...selectedUnits, masterUnit];
+    onUnitsChange(newSelectedUnits);
+  };
+
+  // Main filtering and sorting logic
   const filteredAndSortedUnits = useMemo(() => {
-    if (!units) return [];
-
-    const filtered = units.filter((unit) => {
-      const matchesSearch = unit.unit_number
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
-      const matchesType =
-        filterType === "all" || unit.property_type === filterType;
-      const matchesBedrooms =
-        filterBedrooms === "all" || unit.bedrooms.toString() === filterBedrooms;
-
-      return matchesSearch && matchesType && matchesBedrooms;
+    if (!selectedProject || masterUnitList.length === 0) return [];
+    
+    const filtered = masterUnitList.filter((unit) => {
+      if (unit.project_id !== selectedProject.project_id) return false;
+      const matchesSearch = unit.unit_number.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesBedrooms = filterBedrooms === "all" || unit.bedrooms.toString() === filterBedrooms;
+      return matchesSearch && matchesBedrooms;
     });
 
-    // Sort units
-    filtered.sort((a, b) => {
+    return filtered.sort((a, b) => {
       switch (sortBy) {
-        case "price":
-          return a.price - b.price;
-        case "area":
-          return a.area_sqft - b.area_sqft;
-        case "floor":
-          return a.floor_level - b.floor_level;
-        default:
-          return 0;
+        case "price_desc": return b.price - a.price;
+        case "area_desc": return b.area_sqft - a.area_sqft;
+        case "price_asc":
+        default: return a.price - b.price;
       }
     });
+  }, [masterUnitList, selectedProject, searchTerm, filterBedrooms, sortBy]);
 
-    return filtered;
-  }, [units, searchTerm, filterType, filterBedrooms, sortBy]);
+  // Apply pagination to the filtered list
+  const paginatedUnits = useMemo(() => {
+    const startIndex = (currentPage - 1) * PAGE_SIZE;
+    return filteredAndSortedUnits.slice(startIndex, startIndex + PAGE_SIZE);
+  }, [currentPage, filteredAndSortedUnits]);
 
-  const isSelected = (unitId) => {
-    return selectedUnits.some((u) => u.unit_id === unitId);
-  };
-
-  const getStatusColor = (unit) => {
-    if (unit.status !== "available") return "red";
-    return "green";
-  };
-
-  const getPropertyTypeIcon = (type) => {
-    switch (type) {
-      case "villa":
-        return <HomeOutlined />;
-      case "apartment":
-        return <BuildOutlined />;
-      case "townhouse":
-        return <HomeOutlined />;
-      case "studio":
-        return <ExpandOutlined />;
-      default:
-        return <HomeOutlined />;
+  const getStatusTag = (status) => {
+    switch (status) {
+      case 'reserved': return <Tag color="warning">Reserved</Tag>;
+      case 'sold': return <Tag color="error">Sold</Tag>;
+      default: return <Tag color="success">Available</Tag>;
     }
   };
 
-  if (!units || units.length === 0) {
-    return (
-      <Card title="Unit Selection">
-        <Empty description="No units available for this project" />
-      </Card>
-    );
-  }
-
   return (
-    <div className="space-y-6">
-      {/* Filters and Controls */}
-      <Card
-        title={
-          <div className="flex items-center justify-between">
-            <span>Unit Selection</span>
-            <Space>
-              <Button
-                icon={
-                  viewMode === "grid" ? <BarsOutlined /> : <AppstoreOutlined />
-                }
-                onClick={() =>
-                  setViewMode(viewMode === "grid" ? "list" : "grid")
-                }
-              />
-              <Tag>{selectedUnits.length} selected</Tag>
-            </Space>
-          </div>
-        }
-        size="small"
-      >
-        <Row gutter={[16, 16]}>
-          <Col xs={24} sm={12} md={6}>
-            <Input
-              placeholder="Search units..."
-              prefix={<SearchOutlined />}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </Col>
-          <Col xs={24} sm={12} md={6}>
-            <Select
-              placeholder="Property Type"
-              className="w-full"
-              value={filterType}
-              onChange={setFilterType}
-            >
-              <Option value="all">All Types</Option>
-              <Option value="studio">Studio</Option>
-              <Option value="apartment">Apartment</Option>
-              <Option value="villa">Villa</Option>
-              <Option value="townhouse">Townhouse</Option>
-            </Select>
-          </Col>
-          <Col xs={24} sm={12} md={6}>
-            <Select
-              placeholder="Bedrooms"
-              className="w-full"
-              value={filterBedrooms}
-              onChange={setFilterBedrooms}
-            >
-              <Option value="all">All Bedrooms</Option>
-              <Option value="0">Studio</Option>
-              <Option value="1">1 BR</Option>
-              <Option value="2">2 BR</Option>
-              <Option value="3">3 BR</Option>
-              <Option value="4">4+ BR</Option>
-            </Select>
-          </Col>
-          <Col xs={24} sm={12} md={6}>
-            <Select
-              placeholder="Sort By"
-              className="w-full"
-              value={sortBy}
-              onChange={setSortBy}
-            >
-              <Option value="price">Price</Option>
-              <Option value="area">Area</Option>
-              <Option value="floor">Floor Level</Option>
-            </Select>
-          </Col>
-        </Row>
-        <div className="mt-4">
-          <Button
-            icon={<FilterOutlined />}
-            onClick={() => {
-              setSearchTerm("");
-              setFilterType("all");
-              setFilterBedrooms("all");
-              setSortBy("price");
-            }}
-          >
-            Clear Filters
-          </Button>
-        </div>
-      </Card>
+    <Card title={<Title level={4}>Step 2: Select Your Units</Title>}>
+      {/* FILTERS */}
+      <Row gutter={[16, 16]} align="bottom">
+        <Col xs={24} md={12} lg={8}><Text className="font-medium block mb-1">Search by Unit No.</Text><Input placeholder="e.g., A101" prefix={<Search size={16} />} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></Col>
+        <Col xs={12} md={6} lg={5}><Text className="font-medium block mb-1">Bedrooms</Text><Select className="w-full" value={filterBedrooms} onChange={setFilterBedrooms}><Option value="all">All</Option><Option value="0">Studio</Option><Option value="1">1 BR</Option><Option value="2">2 BR</Option><Option value="3">3+ BR</Option></Select></Col>
+        <Col xs={12} md={6} lg={5}><Text className="font-medium block mb-1">Sort By</Text><Select className="w-full" value={sortBy} onChange={setSortBy}><Option value="price_asc">Price (Low-High)</Option><Option value="price_desc">Price (High-Low)</Option><Option value="area_desc">Area (High-Low)</Option></Select></Col>
+        <Col><Button icon={<Filter size={16} />} onClick={() => { setSearchTerm(""); setFilterBedrooms("all"); setSortBy("price_asc"); }}>Clear</Button></Col>
+      </Row>
 
-      {/* Units Display */}
-      <Card title="Available Units">
-        <Row gutter={[16, 16]}>
-          {filteredAndSortedUnits.map((unit) => (
-            <Col
-              xs={24}
-              sm={viewMode === "grid" ? 12 : 24}
-              md={viewMode === "grid" ? 8 : 24}
-              lg={viewMode === "grid" ? 24 : 24}
-              key={unit.unit_id}
-            >
-              <div
-                className={`border rounded-lg p-4 transition-all cursor-pointer unit-card ${
-                  isSelected(unit.unit_id)
-                    ? "border-blue-500 bg-blue-50"
-                    : unit.status !== "available"
-                    ? "opacity-60 cursor-not-allowed"
-                    : "hover:bg-gray-50"
-                }`}
-                onClick={() =>
-                  unit.status === "available" && onUnitToggle(unit)
-                }
-              >
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Space>
-                      {getPropertyTypeIcon(unit.property_type)}
-                      <Text strong>{unit.unit_number}</Text>
-                    </Space>
-                    <Space>
-                      {unit.status === "available" && (
-                        <Checkbox
-                          checked={isSelected(unit.unit_id)}
-                          disabled={unit.status !== "available"}
-                        />
-                      )}
-                    </Space>
-                  </div>
+      <Divider />
 
-                  <div className="flex items-center justify-between">
-                    <Tag color={getStatusColor(unit)}>
-                      {unit.status === "available" ? "Available" : "Sold"}
-                    </Tag>
-                    <Text type="secondary" className="text-sm">
-                      Floor {unit.floor_level}
-                    </Text>
-                  </div>
+      {/* UNIT CARDS GRID & PAGINATION */}
+      <div className="bg-gray-50/50 p-4 rounded-lg">
+        {paginatedUnits.length > 0 ? (
+          <>
+            <Row gutter={[isMobile ? 12 : 16, isMobile ? 12 : 16]}>
+              {paginatedUnits.map((unit) => {
+                const isSelected = selectedIds.includes(unit.unit_id);
+                const isUnavailable = unit.status !== 'available';
+                const selectedVersion = selectedUnits.find(su => su.unit_id === unit.unit_id);
+                const hasPriceChanged = selectedVersion && selectedVersion.price !== unit.price;
 
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center justify-between">
-                      <span>Bedrooms:</span>
-                      <span>
-                        {unit.bedrooms === 0 ? "Studio" : `${unit.bedrooms} BR`}
-                      </span>
-                    </div>
+                return (
+                  <Col xs={24} sm={12} lg={8} key={unit.unit_id}>
+                    {isMobile ? (
+                      // --- COMPACT MOBILE VIEW ---
+                      <div className={`bg-white rounded-lg border-2 p-3 flex justify-between items-center transition-all ${isUnavailable ? 'opacity-60' : 'cursor-pointer'} ${isSelected ? 'border-blue-500' : 'border-gray-200'}`} onClick={() => toggleSelect(unit)}>
+                        <div>
+                          <div className="flex items-center gap-2 mb-1"><FileText size={16} /><Text strong>{unit.unit_number}</Text></div>
+                          {getStatusTag(unit.status)}
+                          <Title level={5} className={`!mt-2 !mb-0 ${hasPriceChanged ? '!text-orange-500' : '!text-blue-600'}`}>AED {unit.price.toLocaleString()}</Title>
+                        </div>
+                        <Checkbox checked={isSelected} disabled={isUnavailable} />
+                      </div>
+                    ) : (
+                      // --- FULL DESKTOP VIEW ---
+                      <div className={`bg-white rounded-lg border-2 flex flex-col transition-all h-full ${isUnavailable ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer hover:shadow-md'} ${isSelected ? 'border-blue-500 shadow-lg' : 'border-gray-200'}`} onClick={() => toggleSelect(unit)}>
+                        <div className="p-4 flex-grow">
+                          <div className="flex justify-between items-center"><div className="flex items-center gap-2"><FileText size={18} /><Text strong className="text-lg">{unit.unit_number}</Text></div><Checkbox checked={isSelected} disabled={isUnavailable} /></div>
+                          <div className="mt-3">{getStatusTag(unit.status)}</div>
+                          <div className="space-y-2 text-base text-gray-700 mt-3">
+                              <div className="flex items-center gap-3"><Bed size={18} /> {unit.bedrooms === 0 ? 'Studio' : `${unit.bedrooms} BR`}</div>
+                              <div className="flex items-center gap-3"><AreaIcon size={18} /> {unit.area_sqft.toLocaleString()} sqft</div>
+                              <div className="flex items-center gap-3"><FloorIcon size={18} /> Floor {unit.floor_level}</div>
+                          </div>
+                          {(unit.has_balcony || unit.has_parking) && <div className="flex items-center gap-4 text-sm pt-3 mt-2 border-t border-gray-100">
+                              {unit.has_balcony && <div className="flex items-center gap-1.5 text-green-700"><BalconyIcon size={16} /> Balcony</div>}
+                              {unit.has_parking && <div className="flex items-center gap-1.5 text-blue-700"><Car size={16} /> Parking</div>}
+                          </div>}
+                        </div>
+                        <div className="p-4 border-t border-gray-100 bg-gray-50/50">
+                          {hasPriceChanged && <div className="flex items-center gap-1 text-orange-500 text-xs font-semibold mb-1"><AlertTriangle size={14} /> Price Updated!</div>}
+                          <Title level={5} className={`!mb-0 ${hasPriceChanged ? '!text-orange-500' : '!text-blue-600'}`}>AED {unit.price.toLocaleString()}</Title>
+                          <Text type="secondary" className="text-xs">AED {Math.round(unit.price / unit.area_sqft).toLocaleString()}/sqft</Text>
+                          {unit.phase && <Text type="secondary" className="text-xs block mt-1">Phase: {unit.phase}</Text>}
+                          {!isUnavailable && <Button type="primary" size="small" className="mt-2 w-full" onClick={(e) => handleReserveClick(e, unit)}>Reserve</Button>}
+                        </div>
+                      </div>
+                    )}
+                  </Col>
+                );
+              })}
+            </Row>
 
-                    <div className="flex items-center justify-between">
-                      <span>Area:</span>
-                      <span>{unit.area_sqft} sqft</span>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <span>Type:</span>
-                      <span className="capitalize">{unit.property_type}</span>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      {unit.has_balcony && (
-                        <Tag color="green" size="small">
-                          Balcony
-                        </Tag>
-                      )}
-                      {unit.has_parking && (
-                        <Tag color="blue" size="small" icon={<CarOutlined />}>
-                          Parking
-                        </Tag>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="pt-2 border-t border-gray-200">
-                    <div className="text-lg font-bold text-blue-600">
-                      AED {unit.price.toLocaleString()}
-                    </div>
-                    <div className="text-xs text-gray-500">
-                      AED{" "}
-                      {Math.round(unit.price / unit.area_sqft).toLocaleString()}
-                      /sqft
-                    </div>
-                  </div>
-
-                  {unit.phase && (
-                    <div className="text-xs text-gray-500">
-                      Phase: {unit.phase}
-                    </div>
-                  )}
+            {filteredAndSortedUnits.length > PAGE_SIZE && (
+                <div className="text-center mt-6">
+                    <Pagination 
+                        current={currentPage}
+                        pageSize={PAGE_SIZE}
+                        total={filteredAndSortedUnits.length}
+                        onChange={(page) => setCurrentPage(page)}
+                        showSizeChanger={false}
+                    />
                 </div>
-              </div>
-            </Col>
-          ))}
-        </Row>
-
-        {filteredAndSortedUnits.length === 0 && (
-          <Empty
-            image={
-              <BuildOutlined
-                style={{ fontSize: "48px", color: "#d9d9d9" }}
-              />
-            }
-            description="No units found matching your criteria"
-          >
-            <Button
-              onClick={() => {
-                setSearchTerm("");
-                setFilterType("all");
-                setFilterBedrooms("all");
-              }}
-            >
-              Clear Filters
-            </Button>
-          </Empty>
+            )}
+          </>
+        ) : (
+          <Empty description="No units match your criteria. Please adjust the filters." />
         )}
-      </Card>
-    </div>
+      </div>
+    </Card>
   );
 }

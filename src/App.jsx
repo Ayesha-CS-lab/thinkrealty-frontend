@@ -1,5 +1,7 @@
-import { ConfigProvider } from "antd"
-import LandingPageBuilder from "./components/LandingPageBuilder"
+import { ConfigProvider } from "antd";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./routes/router";
+import OfflineNavigator from "./pages/errorScreen/offlineError";
 
 function App() {
   return (
@@ -13,10 +15,11 @@ function App() {
       }}
     >
       <div className="App">
-        <LandingPageBuilder />
+        <OfflineNavigator />
+        <RouterProvider router={router} />
       </div>
     </ConfigProvider>
-  )
+  );
 }
 
-export default App
+export default App;
