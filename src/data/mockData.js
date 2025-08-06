@@ -105,9 +105,9 @@ export const mockProjects = [
     completion_status: "under_construction",
     min_price: 800000,
     max_price: 2500000,
-    total_units: 30,
+    total_units: 40,
     commonAreaRatio: 1.2,
-    available_units: 10, // This is < 20% of 200   
+    // available_units: 10, // This is < 20% of 200   
     completion_date: "2025-12-31",
     developer: "Emaar Properties",
     amenities: ["Swimming Pool", "Gym", "Parking", "Security", "Concierge"],
@@ -130,7 +130,7 @@ export const mockProjects = [
     min_price: 1200000,
     max_price: 4000000,
     total_units: 150,
-    available_units: 25, // Reduced to show the "low availability" state
+    // available_units: 25, // Reduced to show the "low availability" state
     completion_date: "2026-06-30",
     developer: "DAMAC Properties",
     amenities: [
@@ -157,8 +157,8 @@ export const mockProjects = [
     completion_status: "ready",
     min_price: 950000,
     max_price: 3200000,
-    total_units: 250,
-    available_units: 210,
+    total_units: 200,
+    // available_units: 210,
     completion_date: "2024-01-15",
     developer: "Sobha Realty",
     amenities: ["Swimming Pool", "Gym", "Security", "Kids Play Area", "Retail Outlets"],
@@ -198,27 +198,23 @@ const generateUnits = (projectId, count) => {
   }
   return units;
 };
-const generatedUnitsForProject1 = generateUnits(1, 150);
 
-export const mockUnits = [
+export const mockUnits = mockProjects.flatMap(project => 
+  generateUnits(project.project_id, project.total_units)
+);
 
-  {
+mockUnits.unshift({
     unit_id: 101,
     project_id: 1,
     unit_number: "A101-TEST",
-    price: 15000, // Change price to test notification
+    price: 850000,
     bedrooms: 1,
-    property_type: "villa",
+    property_type: "apartment",
     area_sqft: 750,
     floor_level: 10,
-    status: "available", // Change status (sold) to test notification
+    status: "available",
     demand_status: 'normal',
     has_balcony: true,
     has_parking: true,
     phase: "A",
-  },
-
-  ...generatedUnitsForProject1,
-  ...generateUnits(2, 80),
-  ...generateUnits(3, 250)
-];
+});

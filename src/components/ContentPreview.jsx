@@ -72,7 +72,8 @@ export default function ContentPreview() {
     dynamicData,
   } = useSelector((state) => {
     const { landingPage } = state;
-    const { selectedProject, selectedUnits, allAreas, allZones } = landingPage;
+    const { selectedProject, selectedUnits, allAreas, allZones, allUnits } =
+      landingPage;
 
     let calculatedData = {
       area: null,
@@ -81,6 +82,8 @@ export default function ContentPreview() {
       averagePricePerSqft: 0,
       bedroomDistribution: {},
       dynamicHighlights: [],
+      projectUnitsAvailable: 0, // Default to 0 instead of undefined
+      totalPrice: 0,
     };
 
     if (
@@ -93,7 +96,11 @@ export default function ContentPreview() {
     ) {
       const totalPrice = selectedUnits.reduce((sum, u) => sum + u.price, 0);
       const totalArea = selectedUnits.reduce((sum, u) => sum + u.area_sqft, 0);
-
+      const projectUnitsAvailable = allUnits.filter(
+        (u) =>
+          u.project_id === selectedProject.project_id &&
+          u.status === "available"
+      ).length;
       calculatedData = {
         area: allAreas.find((a) => a.area_id === selectedProject.area_id),
         zone: allZones.find((z) => z.zone_id === selectedProject.zone_id),
@@ -104,13 +111,7 @@ export default function ContentPreview() {
           acc[key] = (acc[key] || 0) + 1;
           return acc;
         }, {}),
-        dynamicHighlights: [
-          "8-12% Expected ROI",
-          "Prime Location",
-          selectedProject.completion_status === "ready"
-            ? "Ready to Rent"
-            : "High Appreciation Potential",
-        ],
+        projectUnitsAvailable: projectUnitsAvailable, // Assign the calculated value
       };
     }
 
