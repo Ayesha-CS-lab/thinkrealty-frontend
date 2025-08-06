@@ -90,20 +90,20 @@ After selecting a project, the user can choose individual units. The right-hand 
 
 ### Validation System in Action
 
-![alt text](./assets/image-2.png)
+![alt text](./src/assets/image-2.png)
 **Description:**
 shows the validation system at work. The user has selected units from two different phases, triggering a critical error. The ValidationReport component appears above the unit grid to inform the user, and the "Generate Preview" button in the sticky footer is disabled, preventing them from proceeding with an invalid selection.
 
 ### Smart Notification System
 
-![alt text](./assets/image-3.png)
+![alt text](./src/assets/image-3.png)
 **Description:**
 The background simulator has triggered a price change on a selected unit. The SmartNotificationCenter in the header shows a badge indicating new alerts. The corresponding unit card in the grid below would simultaneously display a "Price Updated!" warning.
 
 ### 5. Mobile Adaptive View
 
-![alt text](./assets/image-7.png)'
-![alt text](./assets/image-8.png)
+![alt text](./src/assets/image-7.png)'
+![alt text](./src/assets/image-8.png)
 **Description:** >When the screen size is reduced, the UnitMultiSelect component automatically switches to a compact view. This adaptive layout optimizes the user experience for mobile devices by presenting the most critical information in a space-efficient manner.
 
 <!-- 2.5 Incomplete Items and Future Approach -->
