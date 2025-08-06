@@ -1,25 +1,27 @@
-"use client"
+import { Badge, Dropdown, Button, Typography } from "antd";
+import { BellOutlined, CloseOutlined } from "@ant-design/icons";
 
-import { Badge, Dropdown, Button, Typography } from "antd"
-import { BellOutlined, CloseOutlined } from "@ant-design/icons"
+const { Text } = Typography;
 
-const { Text } = Typography
-
-export default function SmartNotificationCenter({ notifications, onRemoveNotification, onClearAll }) {
+export default function SmartNotificationCenter({
+  notifications,
+  onRemoveNotification,
+  onClearAll,
+}) {
   const getNotificationColor = (severity) => {
     switch (severity) {
       case "error":
-        return "#ff4d4f"
+        return "#ff4d4f";
       case "warning":
-        return "#faad14"
+        return "#faad14";
       case "info":
-        return "#1890ff"
+        return "#1890ff";
       case "success":
-        return "#52c41a"
+        return "#52c41a";
       default:
-        return "#d9d9d9"
+        return "#d9d9d9";
     }
-  }
+  };
 
   const notificationMenu = {
     items: [
@@ -57,11 +59,17 @@ export default function SmartNotificationCenter({ notifications, onRemoveNotific
                   <div className="flex-1">
                     <div
                       className="w-2 h-2 rounded-full inline-block mr-2"
-                      style={{ backgroundColor: getNotificationColor(notification.severity) }}
+                      style={{
+                        backgroundColor: getNotificationColor(
+                          notification.severity
+                        ),
+                      }}
                     />
                     <Text className="text-sm">{notification.message}</Text>
                     {notification.description && (
-                      <div className="text-xs text-gray-500 mt-1">{notification.description}</div>
+                      <div className="text-xs text-gray-500 mt-1">
+                        {notification.description}
+                      </div>
                     )}
                     <div className="text-xs text-gray-500 mt-1">
                       {new Date(notification.timestamp).toLocaleTimeString()}
@@ -72,8 +80,8 @@ export default function SmartNotificationCenter({ notifications, onRemoveNotific
                     size="small"
                     icon={<CloseOutlined />}
                     onClick={(e) => {
-                      e.stopPropagation()
-                      onRemoveNotification(notification.id)
+                      e.stopPropagation();
+                      onRemoveNotification(notification.id);
                     }}
                   />
                 </div>
@@ -81,7 +89,7 @@ export default function SmartNotificationCenter({ notifications, onRemoveNotific
             ),
           }))),
     ],
-  }
+  };
 
   return (
     <Dropdown
@@ -90,9 +98,13 @@ export default function SmartNotificationCenter({ notifications, onRemoveNotific
       placement="bottomRight"
       overlayStyle={{ maxHeight: "400px", overflowY: "auto" }}
     >
-      <Badge count={notifications.length} size="small" className="notification-badge">
+      <Badge
+        count={notifications.length}
+        size="small"
+        className="notification-badge"
+      >
         <Button type="text" icon={<BellOutlined />} />
       </Badge>
     </Dropdown>
-  )
+  );
 }

@@ -61,31 +61,31 @@ The application has UI elements for a user profile but no actual authentication 
 <!-- 2.4 Screenshots and Descriptions -->
 Here are key screens demonstrating the application's core features.
 ### Project Selection Interface
-![alt text](image.png)
+![alt text](./assets/image.png)
 **Description:** 
 The initial view where the user can filter and select a project. The cards are designed to be visually appealing and data-rich, showing an image, location, price range, and a progress bar for unit availability.
 
 ### Unit Selection & Dynamic Sidebar
-[alt text](image-1.png)
-![alt text](image-4.png)
-![alt text](image-5.png)
-![alt text](image-6.png)
+[alt text](./assets/image-1.png)
+![alt text](./assets/image-4.png)
+![alt text](./assets/image-5.png)
+![alt text](./assets/image-6.png)
 **Description:** 
  After selecting a project, the user can choose individual units. The right-hand sidebar updates in real-time, showing a detailed pricing breakdown (Scenario 1) and the project's availability status, including any active reservation timers (Scenario 2).
 
 ### Validation System in Action
-![alt text](image-2.png)
+![alt text](./assets/image-2.png)
 **Description:** 
  shows the validation system at work. The user has selected units from two different phases, triggering a critical error. The ValidationReport component appears above the unit grid to inform the user, and the "Generate Preview" button in the sticky footer is disabled, preventing them from proceeding with an invalid selection.
 
 ### Smart Notification System
-![alt text](image-3.png)
+![alt text](./assets/image-3.png)
 **Description:** 
 The background simulator has triggered a price change on a selected unit. The SmartNotificationCenter in the header shows a badge indicating new alerts. The corresponding unit card in the grid below would simultaneously display a "Price Updated!" warning.
 
 ### 5. Mobile Adaptive View
-![alt text](image-7.png)'
-![alt text](image-8.png)
+![alt text](./assets/image-7.png)'
+![alt text](./assets/image-8.png)
 **Description:** >When the screen size is reduced, the UnitMultiSelect component automatically switches to a compact view. This adaptive layout optimizes the user experience for mobile devices by presenting the most critical information in a space-efficient manner.
 
 <!-- 2.5 Incomplete Items and Future Approach -->

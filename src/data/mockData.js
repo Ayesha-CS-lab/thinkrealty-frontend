@@ -50,9 +50,9 @@
 //     has_balcony: true,
 //     has_parking: true,
 //     phase: "A",
-   
+
 //     imageUrl: "https://images.pexels.com/photos/6585626/pexels-photo-6585626.jpeg?auto=compress&cs=tinysrgb&w=600",
-    
+
 //   },
 //   {
 //     unit_id: 201,
@@ -105,20 +105,25 @@ export const mockProjects = [
     completion_status: "under_construction",
     min_price: 800000,
     max_price: 2500000,
-    total_units: 200,
-            commonAreaRatio: 1.2,
-
-    available_units: 35, // This is < 20% of 200    completion_date: "2025-12-31",
+    total_units: 30,
+    commonAreaRatio: 1.2,
+    available_units: 10, // This is < 20% of 200   
+    completion_date: "2025-12-31",
     developer: "Emaar Properties",
     amenities: ["Swimming Pool", "Gym", "Parking", "Security", "Concierge"],
+    timeline: {
+      announcementDate: "2022-01-15",
+      bookingStartDate: "2022-02-28",
+      constructionStartDate: "2022-03-02",
+      constructionProgress: 78.19,
+      lastProgressUpdate: "2025-01-30",
+    }
   },
   {
     project_id: 2,
     project_name: "Downtown Luxury Residences",
-    // highlight-start
     imageUrl:
       "https://images.pexels.com/photos/3935320/pexels-photo-3935320.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    // highlight-end
     area_id: 2,
     zone_id: 3,
     completion_status: "off_plan",
@@ -135,8 +140,15 @@ export const mockProjects = [
       "Business Center",
       "Kids Play Area",
     ],
+    timeline: {
+      announcementDate: "2023-05-10",
+      bookingStartDate: "2023-06-20",
+      constructionStartDate: "2023-09-01",
+      constructionProgress: 25.50,
+      lastProgressUpdate: "2024-12-15",
+    }
   },
-   {
+  {
     project_id: 3,
     project_name: "Creekfront Residences",
     imageUrl: "https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
@@ -150,37 +162,63 @@ export const mockProjects = [
     completion_date: "2024-01-15",
     developer: "Sobha Realty",
     amenities: ["Swimming Pool", "Gym", "Security", "Kids Play Area", "Retail Outlets"],
+    timeline: {
+      announcementDate: "2022-01-15",
+      bookingStartDate: "2022-02-28",
+      constructionStartDate: "2022-03-02",
+      constructionProgress: 78.19,
+      lastProgressUpdate: "2025-01-30",
+    }
   },
 ];
 
 const generateUnits = (projectId, count) => {
-    let units = [];
-    for(let i=1; i<=count; i++) {
-        const bedrooms = Math.floor(Math.random() * 4); // 0-3 BR
-        const type = bedrooms === 0 ? 'studio' : 'apartment';
-        const area = 400 + bedrooms * 300 + Math.floor(Math.random() * 100);
-        const price = 800000 + area * 500 + bedrooms * 150000;
+  let units = [];
+  for (let i = 1; i <= count; i++) {
+    const bedrooms = Math.floor(Math.random() * 4); // 0-3 BR
+    const type = bedrooms === 0 ? 'studio' : 'apartment';
+    const area = 400 + bedrooms * 300 + Math.floor(Math.random() * 100);
+    const price = 800000 + area * 500 + bedrooms * 150000;
 
-        units.push({
-            unit_id: projectId * 1000 + i,
-            project_id: projectId,
-            unit_number: `${String.fromCharCode(65 + (i % 26))}${projectId}0${i}`,
-            price: Math.round(price/1000) * 1000,
-            bedrooms: bedrooms,
-            property_type: type,
-            area_sqft: area,
-            floor_level: 1 + Math.floor(Math.random() * 40),
-            status: Math.random() < 0.85 ? 'available' : 'sold',
-            demand_status: 'normal',
-            has_balcony: Math.random() > 0.4,
-            has_parking: Math.random() > 0.2,
-            phase: i % 3 === 0 ? 'B' : 'A',
-        });
-    }
-    return units;
+    units.push({
+      unit_id: projectId * 1000 + i,
+      project_id: projectId,
+      unit_number: `${String.fromCharCode(65 + (i % 26))}${projectId}0${i}`,
+      price: Math.round(price / 1000) * 1000,
+      bedrooms: bedrooms,
+      property_type: type,
+      area_sqft: area,
+      floor_level: 1 + Math.floor(Math.random() * 40),
+      status: Math.random() < 0.85 ? 'available' : 'sold',
+      demand_status: 'normal',
+      has_balcony: Math.random() > 0.4,
+      has_parking: Math.random() > 0.2,
+      phase: i % 3 === 0 ? 'B' : 'A',
+    });
+  }
+  return units;
 };
+const generatedUnitsForProject1 = generateUnits(1, 150);
+
 export const mockUnits = [
-    ...generateUnits(1, 150),
-    ...generateUnits(2, 80),
-    ...generateUnits(3, 250)
+
+  {
+    unit_id: 101,
+    project_id: 1,
+    unit_number: "A101-TEST",
+    price: 15000, // Change price to test notification
+    bedrooms: 1,
+    property_type: "villa",
+    area_sqft: 750,
+    floor_level: 10,
+    status: "available", // Change status (sold) to test notification
+    demand_status: 'normal',
+    has_balcony: true,
+    has_parking: true,
+    phase: "A",
+  },
+
+  ...generatedUnitsForProject1,
+  ...generateUnits(2, 80),
+  ...generateUnits(3, 250)
 ];
